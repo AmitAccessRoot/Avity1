@@ -1,0 +1,331 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #000000;
+  --sub: #6b6b6b;
+  --line: #e3e3e3;
+  --press: rgba(0, 0, 0, 0.07);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --card: #1e1e1e;
+    --text: #ececec;
+    --sub: #9a9a9a;
+    --line: #2e2e2e;
+    --press: rgba(255, 255, 255, 0.09);
+    --shadow: none;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Devanagari", "Noto Sans", sans-serif;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+::selection {
+  background: rgba(128, 128, 128, 0.35);
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button:focus,
+input:focus {
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--sub);
+  outline-offset: 2px;
+}
+
+/* पूरी स्क्रीन: ऊपर और नीचे अंदर तक सफेद / डार्क */
+#app {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+#bar {
+  flex: none;
+  background: var(--bg);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+.bar-in {
+  display: none;
+  align-items: center;
+  width: 100%;
+  max-width: 760px;
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 4px 0 16px;
+}
+
+#bar[data-mode="home"] .bar-home,
+#bar[data-mode="search"] .bar-search,
+#bar[data-mode="item"] .bar-item {
+  display: flex;
+}
+
+#bar[data-mode="search"] .bar-search,
+#bar[data-mode="item"] .bar-item {
+  padding-left: 4px;
+}
+
+.bar-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  background: var(--press);
+}
+
+#q {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  font-size: 17px;
+  caret-color: var(--text);
+}
+
+#q::placeholder {
+  color: var(--sub);
+  opacity: 1;
+}
+
+#views {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.scroll {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+
+.wrap {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 16px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background-color: var(--card);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 76px;
+}
+
+.card:active {
+  background-image: linear-gradient(var(--press), var(--press));
+}
+
+.card-t {
+  flex: 1;
+  min-width: 0;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.card::after {
+  content: "";
+  flex: none;
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-top: 2px solid var(--sub);
+  border-right: 2px solid var(--sub);
+  transform: rotate(45deg);
+}
+
+.note {
+  margin: 0;
+  padding: 24px 8px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--sub);
+}
+
+.detail {
+  padding-top: 4px;
+}
+
+#dTitle {
+  margin: 0 0 16px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.3;
+  word-break: break-word;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#dBody {
+  font-size: 17px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* पहली बार डेटा भरते समय की स्क्रीन */
+#boot {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  background: var(--bg);
+}
+
+#boot p {
+  margin: 16px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+#boot .sub {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--sub);
+}
+
+.spin {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--line);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress {
+  width: min(80%, 320px);
+  height: 6px;
+  margin-top: 16px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--line);
+}
+
+.progress > i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--text);
+  transition: width 0.2s;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 12px 22px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  cursor: pointer;
+}
+
+.btn:active {
+  background-image: linear-gradient(var(--press), var(--press));
+  }
