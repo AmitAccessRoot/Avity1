@@ -1,0 +1,69 @@
+name: Deploy Avity to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check code files
+        run: |
+          for f in app.js db.js worker.js sw.js; do
+            node --check "$f"
+          done
+
+      - name: Check data files
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open('data/files.json', encoding='utf-8') as f:
+              m = json.load(f)
+
+          assert 'version' in m, 'files.json me "version" chahiye'
+          assert isinstance(m['files'], list), 'files.json me "files" ek list honi chahiye'
+
+          for name in m['files']:
+              path = os.path.join('data', name)
+              assert os.path.isfile(path), 'file nahi mili: ' + name
+
+          print('data ok:', len(m['files']), 'files, version', m['version'])
+          PY
+
+      - name: Prepare site
+        run: |
+          mkdir _site
+          cp index.html style.css app.js db.js worker.js sw.js manifest.webmanifest _site/
+          cp icon-*.png _site/
+          cp -r data _site/data
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
