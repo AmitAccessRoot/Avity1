@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Avity</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="bar" data-mode="home">
+    <div class="bar-in bar-home">
+      <h1 class="bar-title" id="appTitle"></h1>
+      <button type="button" class="icon-btn" id="btnSearch" aria-label="खोजें">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+      </button>
+    </div>
+    <div class="bar-in bar-search">
+      <button type="button" class="icon-btn" id="btnBackS" aria-label="पीछे">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"></line><polyline points="10 6 4 12 10 18"></polyline></svg>
+      </button>
+      <input id="q" type="text" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button type="button" class="icon-btn" id="btnClear" aria-label="मिटाएं" hidden>
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+      </button>
+    </div>
+    <div class="bar-in bar-item">
+      <button type="button" class="icon-btn" id="btnBackI" aria-label="पीछे">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"></line><polyline points="10 6 4 12 10 18"></polyline></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="views">
+    <section id="homeScroll" class="scroll">
+      <div class="wrap">
+        <div id="homeList"></div>
+        <p id="homeNote" class="note" hidden></p>
+      </div>
+    </section>
+
+    <section id="searchScroll" class="scroll" hidden>
+      <div class="wrap">
+        <p id="searchNote" class="note" hidden></p>
+        <div id="searchList"></div>
+        <p id="searchMore" class="note" hidden></p>
+      </div>
+    </section>
+
+    <section id="itemScroll" class="scroll" hidden>
+      <article class="wrap detail">
+        <h2 id="dTitle"></h2>
+        <div id="dBody"></div>
+      </article>
+    </section>
+  </main>
+</div>
+
+<div id="boot">
+  <div class="spin" id="bootSpin"></div>
+  <p id="bootText"></p>
+  <div class="progress" id="bootBarWrap" hidden><i id="bootBar"></i></div>
+  <p id="bootCount" class="sub"></p>
+  <button type="button" class="btn" id="bootRetry" hidden>फिर से कोशिश करें</button>
+</div>
+
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+  </html>
