@@ -49,6 +49,105 @@ jobs:
           print('data ok:', len(m['files']), 'files, version', m['version'])
           PY
 
+      - name: Create icons if missing
+        run: |
+          python3 - <<'PY'
+          import math
+          import os
+          import struct
+          import zlib
+
+
+          def write_png(path, size, maskable):
+              ss = 2
+              n = size * ss
+              box = 0.30 if maskable else 0.24
+              x0 = n * box
+              y0 = n * box
+              w = n * (1 - 2 * box)
+              half = max(2.0, w * 0.14) / 2.0
+              radius = n * 0.22
+
+              def pt(u, v):
+                  return (x0 + u * w, y0 + v * w)
+
+              apex = pt(0.5, 0.02)
+              segs = [
+                  (pt(0.08, 0.98), apex),
+                  (pt(0.92, 0.98), apex),
+                  (pt(0.26, 0.66), pt(0.74, 0.66)),
+              ]
+
+              def dist(px, py, a, b):
+                  ax, ay = a
+                  bx, by = b
+                  dx = bx - ax
+                  dy = by - ay
+                  t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)
+                  t = 0.0 if t < 0 else (1.0 if t > 1 else t)
+                  cx = ax + t * dx
+                  cy = ay + t * dy
+                  return math.hypot(px - cx, py - cy)
+
+              def in_shape(px, py):
+                  if maskable:
+                      return True
+                  cx = min(max(px, radius), n - radius)
+                  cy = min(max(py, radius), n - radius)
+                  return math.hypot(px - cx, py - cy) <= radius
+
+              def in_letter(px, py):
+                  if px < x0 - half or px > x0 + w + half or py < y0 - half or py > y0 + w + half:
+                      return False
+                  for a, b in segs:
+                      if dist(px, py, a, b) <= half:
+                          return True
+                  return False
+
+              rows = []
+              total = ss * ss
+              for y in range(size):
+                  row = bytearray([0])
+                  for x in range(size):
+                      shape = 0
+                      letter = 0
+                      for sy in range(ss):
+                          for sx in range(ss):
+                              px = x * ss + sx + 0.5
+                              py = y * ss + sy + 0.5
+                              if in_shape(px, py):
+                                  shape += 1
+                                  if in_letter(px, py):
+                                      letter += 1
+                      c = int(round(255 * letter / shape)) if shape else 0
+                      a = int(round(255 * shape / total))
+                      row += bytes([c, c, c, a])
+                  rows.append(bytes(row))
+
+              def chunk(tag, data):
+                  body = tag + data
+                  return struct.pack('>I', len(data)) + body + struct.pack('>I', zlib.crc32(body) & 0xFFFFFFFF)
+
+              png = b'\x89PNG\r\n\x1a\n'
+              png += chunk(b'IHDR', struct.pack('>IIBBBBB', size, size, 8, 6, 0, 0, 0))
+              png += chunk(b'IDAT', zlib.compress(b''.join(rows), 9))
+              png += chunk(b'IEND', b'')
+              with open(path, 'wb') as f:
+                  f.write(png)
+
+
+          for name, size, maskable in [
+              ('icon-192.png', 192, False),
+              ('icon-512.png', 512, False),
+              ('icon-maskable-512.png', 512, True),
+          ]:
+              if os.path.exists(name):
+                  print('already there:', name)
+              else:
+                  write_png(name, size, maskable)
+                  print('created:', name)
+          PY
+
       - name: Prepare site
         run: |
           mkdir _site
